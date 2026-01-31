@@ -1,0 +1,8 @@
+customer_id,first_name,last_name,email,company_name,phone
+C001,John,Doe,john.doe@email.com,NeoTech Industries,555-0101
+C002,Jane,Smith,jane.smith@email.com,MegaData Corp,555-0102
+C003,Michael,Johnson,michael.j@email.com,CloudBase Systems,555-0103
+C004,Emily,Williams,emily.w@email.com,GlobalTech Solutions,555-0104
+C005,David,Brown,david.b@email.com,InnovateTech,555-0105
+C006,Sarah,Miller,sarah.m@email.com,StartupHub,555-0106
+C007,Robert,Davis,robert.d@email.com,DevOps Masters,555-0107

@@ -1,4 +1,4 @@
-import pyodbc
+import psycopg2
 import os
 from dotenv import load_dotenv
 
@@ -7,22 +7,22 @@ load_dotenv()
 
 class DatabaseConnection:
     def __init__(self):
-        self.server = os.getenv("SERVER")
-        self.database = os.getenv("DATABASE")
-        self.trusted_connection = os.getenv("TRUSTED_CONNECTION", "yes")
-        self.trust_server_certificate = os.getenv("TRUST_SERVER_CERTIFICATE", "yes")
+        self.host = os.getenv("DB_HOST")
+        self.database = os.getenv("DB_NAME")
+        self.user = os.getenv("DB_USER")
+        self.password = os.getenv("DB_PASSWORD")
+        self.sslmode = os.getenv("DB_SSLMODE", "require")
 
     def get_connection(self):
-        connection_string = (
-            f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-            f"SERVER={self.server};"
-            f"DATABASE={self.database};"
-            f"Trusted_Connection={self.trusted_connection};"
-            f"TrustServerCertificate={self.trust_server_certificate};"
-        )
         try:
-            conn = pyodbc.connect(connection_string)
+            conn = psycopg2.connect(
+                host=self.host,
+                database=self.database,
+                user=self.user,
+                password=self.password,
+                sslmode=self.sslmode
+            )
             return conn
-        except pyodbc.Error as e:
+        except psycopg2.Error as e:
             print(f"Connection failed: {e}")
             raise
