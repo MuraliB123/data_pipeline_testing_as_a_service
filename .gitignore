@@ -1,3 +1,4 @@
 # Ignore the .env file
 python_svc/.env
 python_svc/env/
+front_end_svc/node_modules/
