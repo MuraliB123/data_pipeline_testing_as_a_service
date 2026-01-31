@@ -166,7 +166,7 @@ data_pipeline_testing_as_a_service/
    # Create .env file with:
    OPENAI_API_KEY=your_openai_api_key
    DB_HOST=localhost
-   DB_PORT=5432
+   DB_PORT=value
    DB_NAME=your_database
    DB_USER=your_username
    DB_PASSWORD=your_password
