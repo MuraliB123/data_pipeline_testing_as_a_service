@@ -1,2 +1,3 @@
 # Ignore the .env file
 python_svc/.env
+python_svc/env/

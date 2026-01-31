@@ -1,0 +1,317 @@
+{
+  "metadata": {
+    "generated_at": "2026-01-31 15:28:30",
+    "pipeline_name": "Customer Data SCD Type 2 ETL",
+    "source_report": "etl_analysis_report.md",
+    "total_cases": 20,
+    "quality_checks": 12,
+    "scenario_checks": 8
+  },
+  "test_cases": [
+    {
+      "test_id": "QC001",
+      "test_name": "Check Total Records Loaded",
+      "test_description": "Validate that all records from the source file are loaded into the target table.",
+      "test_type": "quality_check",
+      "sql_query": "SELECT COUNT(*) FROM dim_customer;",
+      "expected_result": 7,
+      "severity": "critical"
+    },
+    {
+      "test_id": "QC002",
+      "test_name": "Check Primary Key Uniqueness",
+      "test_description": "Ensure that the customer_id in the target table is unique.",
+      "test_type": "quality_check",
+      "sql_query": "SELECT customer_id, COUNT(*) FROM dim_customer GROUP BY customer_id HAVING COUNT(*) > 1;",
+      "expected_result": 0,
+      "severity": "critical"
+    },
+    {
+      "test_id": "QC003",
+      "test_name": "Check Required Fields for NULLs",
+      "test_description": "Validate that required fields (customer_id, effective_start_date, is_current) are not NULL.",
+      "test_type": "quality_check",
+      "sql_query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id IS NULL OR effective_start_date IS NULL OR is_current IS NULL;",
+      "expected_result": 0,
+      "severity": "critical"
+    },
+    {
+      "test_id": "QC004",
+      "test_name": "Check Current Record Constraint",
+      "test_description": "Ensure that there is only one current record per customer (is_current = true).",
+      "test_type": "quality_check",
+      "sql_query": "SELECT customer_id, COUNT(*) FROM dim_customer WHERE is_current = true GROUP BY customer_id HAVING COUNT(*) > 1;",
+      "expected_result": 0,
+      "severity": "high"
+    },
+    {
+      "test_id": "QC005",
+      "test_name": "Check Effective End Date for Current Records",
+      "test_description": "Validate that current records have a NULL effective_end_date.",
+      "test_type": "quality_check",
+      "sql_query": "SELECT COUNT(*) FROM dim_customer WHERE is_current = true AND effective_end_date IS NOT NULL;",
+      "expected_result": 0,
+      "severity": "high"
+    },
+    {
+      "test_id": "QC006",
+      "test_name": "Check Effective Start Date Validity",
+      "test_description": "Ensure that effective_start_date is not in the future.",
+      "test_type": "quality_check",
+      "sql_query": "SELECT COUNT(*) FROM dim_customer WHERE effective_start_date > NOW();",
+      "expected_result": 0,
+      "severity": "medium"
+    },
+    {
+      "test_id": "QC007",
+      "test_name": "Check Data Types for Customer ID",
+      "test_description": "Validate that customer_id is of the correct data type (character varying).",
+      "test_type": "quality_check",
+      "sql_query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id IS NOT NULL AND NOT (customer_id ~ '^[A-Za-z0-9]+$');",
+      "expected_result": 0,
+      "severity": "medium"
+    },
+    {
+      "test_id": "QC008",
+      "test_name": "Check Email Format",
+      "test_description": "Ensure that email addresses follow a valid format.",
+      "test_type": "quality_check",
+      "sql_query": "SELECT COUNT(*) FROM dim_customer WHERE email IS NOT NULL AND NOT (email ~ '^[^@]+@[^@]+\\.[^@]+$');",
+      "expected_result": 0,
+      "severity": "high"
+    },
+    {
+      "test_id": "QC009",
+      "test_name": "Check Phone Number Format",
+      "test_description": "Validate that phone numbers are in the correct format (e.g., '555-0101').",
+      "test_type": "quality_check",
+      "sql_query": "SELECT COUNT(*) FROM dim_customer WHERE phone IS NOT NULL AND NOT (phone ~ '^\\d{3}-\\d{4}$');",
+      "expected_result": 0,
+      "severity": "medium"
+    },
+    {
+      "test_id": "QC010",
+      "test_name": "Check Company Name Completeness",
+      "test_description": "Ensure that company_name is not NULL for all records.",
+      "test_type": "quality_check",
+      "sql_query": "SELECT COUNT(*) FROM dim_customer WHERE company_name IS NULL;",
+      "expected_result": 0,
+      "severity": "medium"
+    },
+    {
+      "test_id": "QC011",
+      "test_name": "Check Creation and Update Timestamps",
+      "test_description": "Validate that created_at and updated_at timestamps are not NULL and created_at is less than or equal to updated_at.",
+      "test_type": "quality_check",
+      "sql_query": "SELECT COUNT(*) FROM dim_customer WHERE created_at IS NULL OR updated_at IS NULL OR created_at > updated_at;",
+      "expected_result": 0,
+      "severity": "medium"
+    },
+    {
+      "test_id": "QC012",
+      "test_name": "Check for Duplicate Surrogate Keys",
+      "test_description": "Ensure that surrogate_key is unique in the target table.",
+      "test_type": "quality_check",
+      "sql_query": "SELECT surrogate_key, COUNT(*) FROM dim_customer GROUP BY surrogate_key HAVING COUNT(*) > 1;",
+      "expected_result": 0,
+      "severity": "critical"
+    },
+    {
+      "test_id": "SC001",
+      "test_name": "New Customer Insertion",
+      "test_description": "Tests the insertion of a new customer record into the target table.",
+      "test_type": "scenario_check",
+      "input_data": [
+        {
+          "customer_id": "C006",
+          "first_name": "Alice",
+          "last_name": "Green",
+          "email": "alice.green@email.com",
+          "company_name": "GreenTech",
+          "phone": "555-0106"
+        }
+      ],
+      "expected_outcome": "A new record for customer C006 is inserted into the dim_customer table with is_current set to true.",
+      "validation_queries": [
+        "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C006' AND is_current = true;"
+      ],
+      "severity": "critical"
+    },
+    {
+      "test_id": "SC002",
+      "test_name": "Company Name Change (SCD Type 2)",
+      "test_description": "Tests the scenario where an existing customer's company name changes.",
+      "test_type": "scenario_check",
+      "input_data": [
+        {
+          "customer_id": "C001",
+          "first_name": "John",
+          "last_name": "Doe",
+          "email": "john.doe@email.com",
+          "company_name": "NewTech Industries",
+          "phone": "555-0101"
+        }
+      ],
+      "expected_outcome": "A new record for customer C001 is created with the new company name, and the previous record is marked as not current.",
+      "validation_queries": [
+        "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C001' AND is_current = false;",
+        "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C001' AND company_name = 'NewTech Industries' AND is_current = true;"
+      ],
+      "severity": "high"
+    },
+    {
+      "test_id": "SC003",
+      "test_name": "Name/Email/Phone Change (SCD Type 1)",
+      "test_description": "Tests the scenario where an existing customer's name, email, and phone number change.",
+      "test_type": "scenario_check",
+      "input_data": [
+        {
+          "customer_id": "C002",
+          "first_name": "Jane",
+          "last_name": "Doe",
+          "email": "jane.doe@email.com",
+          "company_name": "MegaData Corp",
+          "phone": "555-0107"
+        }
+      ],
+      "expected_outcome": "The existing record for customer C002 is updated with the new name, email, and phone number.",
+      "validation_queries": [
+        "SELECT first_name, last_name, email, phone FROM dim_customer WHERE customer_id = 'C002';"
+      ],
+      "severity": "medium"
+    },
+    {
+      "test_id": "SC004",
+      "test_name": "Combined Type 1 + Type 2 Changes",
+      "test_description": "Tests the scenario where an existing customer's company name changes and their email changes.",
+      "test_type": "scenario_check",
+      "input_data": [
+        {
+          "customer_id": "C003",
+          "first_name": "Michael",
+          "last_name": "Johnson",
+          "email": "michael.new@email.com",
+          "company_name": "CloudBase Solutions",
+          "phone": "555-0103"
+        }
+      ],
+      "expected_outcome": "A new record for customer C003 is created with the new company name and email, and the previous record is marked as not current.",
+      "validation_queries": [
+        "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C003' AND is_current = false;",
+        "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C003' AND email = 'michael.new@email.com' AND is_current = true;"
+      ],
+      "severity": "high"
+    },
+    {
+      "test_id": "SC005",
+      "test_name": "Multiple Sequential Changes to Same Customer",
+      "test_description": "Tests multiple updates to the same customer record in sequential ETL runs.",
+      "test_type": "scenario_check",
+      "input_data": [
+        {
+          "customer_id": "C001",
+          "first_name": "John",
+          "last_name": "Doe",
+          "email": "john.doe@email.com",
+          "company_name": "TechCorp Inc",
+          "phone": "555-0101"
+        },
+        {
+          "customer_id": "C001",
+          "first_name": "John",
+          "last_name": "Doe",
+          "email": "john.updated@email.com",
+          "company_name": "TechCorp Inc",
+          "phone": "555-0108"
+        }
+      ],
+      "expected_outcome": "Two records for customer C001 are created, with the first record marked as not current and the second record as current.",
+      "validation_queries": [
+        "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C001' AND is_current = false;",
+        "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C001' AND email = 'john.updated@email.com' AND is_current = true;"
+      ],
+      "severity": "medium"
+    },
+    {
+      "test_id": "SC006",
+      "test_name": "Unchanged Records",
+      "test_description": "Tests that records remain unchanged when no updates are made.",
+      "test_type": "scenario_check",
+      "input_data": [
+        {
+          "customer_id": "C003",
+          "first_name": "Michael",
+          "last_name": "Johnson",
+          "email": "michael.j@email.com",
+          "company_name": "CloudBase Systems",
+          "phone": "555-0103"
+        }
+      ],
+      "expected_outcome": "The record for customer C003 remains unchanged in the dim_customer table.",
+      "validation_queries": [
+        "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C003' AND is_current = true;"
+      ],
+      "severity": "low"
+    },
+    {
+      "test_id": "SC007",
+      "test_name": "New Customer + Existing Customer Updates",
+      "test_description": "Tests the scenario where a new customer is added while existing customers are updated.",
+      "test_type": "scenario_check",
+      "input_data": [
+        {
+          "customer_id": "C004",
+          "first_name": "Emily",
+          "last_name": "Williams",
+          "email": "emily.w@email.com",
+          "company_name": "TechCorp Inc",
+          "phone": "555-0104"
+        },
+        {
+          "customer_id": "C002",
+          "first_name": "Jane",
+          "last_name": "Doe",
+          "email": "jane.doe@email.com",
+          "company_name": "DataSoft LLC",
+          "phone": "555-0109"
+        }
+      ],
+      "expected_outcome": "A new record for customer C004 is inserted, and the record for customer C002 is updated with the new phone number.",
+      "validation_queries": [
+        "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C004' AND is_current = true;",
+        "SELECT phone FROM dim_customer WHERE customer_id = 'C002';"
+      ],
+      "severity": "high"
+    },
+    {
+      "test_id": "SC008",
+      "test_name": "Edge Cases with Empty Values",
+      "test_description": "Tests the handling of empty values and special characters in customer data.",
+      "test_type": "scenario_check",
+      "input_data": [
+        {
+          "customer_id": "C005",
+          "first_name": "",
+          "last_name": "Brown",
+          "email": "david.b@email.com",
+          "company_name": "InnovateTech",
+          "phone": "555-0105"
+        },
+        {
+          "customer_id": "C006",
+          "first_name": "Alice",
+          "last_name": "Green",
+          "email": "alice.green@email.com",
+          "company_name": "Green@Tech",
+          "phone": "555-0106"
+        }
+      ],
+      "expected_outcome": "Records are inserted or updated correctly, with the first name of C005 being empty and the company name of C006 containing a special character.",
+      "validation_queries": [
+        "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C005' AND first_name = '';",
+        "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C006' AND company_name = 'Green@Tech';"
+      ],
+      "severity": "medium"
+    }
+  ]
+}
