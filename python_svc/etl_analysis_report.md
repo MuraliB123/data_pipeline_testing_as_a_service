@@ -1,6 +1,6 @@
 # ETL Pipeline Analysis Report
 
-**Generated:** 2026-01-31 15:27:34  
+**Generated:** 2026-01-31 16:14:03  
 **Pipeline:** Customer Data SCD Type 2 ETL
 
 ---
@@ -135,37 +135,35 @@ Record 5:
 ## 3. ETL Transformation Summary
 
 ### Data Flow Summary
-The ETL pipeline processes customer data from a CSV file into a PostgreSQL target table named `dim_customer`. The flow begins with the extraction of raw data from the CSV file, followed by transformations based on business rules, and concludes with loading the transformed data into the target table. The `run_etl()` method orchestrates this entire process, ensuring that data is accurately extracted, transformed, and loaded.
+The ETL process begins with the extraction of customer data from a CSV file. The `extract()` method reads the source data, which includes fields such as `customer_id`, `first_name`, `last_name`, `email`, `company_name`, and `phone`. The data is then transformed and loaded into the target PostgreSQL table `dim_customer`. The `run_etl()` method orchestrates this process, ensuring that data is correctly processed and stored.
 
 ### Key Transformations
-1. **Extraction**: The `extract()` method reads data from the CSV file, converting each row into a structured format suitable for processing.
-2. **Surrogate Key Generation**: Each record in the target table is assigned a unique surrogate key, generated automatically using a sequence.
-3. **Effective Date Management**: The ETL process tracks the validity of records using `effective_start_date` and `effective_end_date` fields.
-4. **Current Record Flag**: An `is_current` flag indicates whether a record is the most recent version for a given customer.
-5. **Change Detection**:
-   - **SCD Type 2 Change**: The `has_scd2_change()` method checks for changes in the `company_name` field, triggering the creation of a new record if a change is detected.
-   - **SCD Type 1 Change**: The `has_scd1_change()` method checks for changes in `first_name`, `last_name`, `email`, and `phone`, which are updated in place without creating new records.
+1. **Surrogate Key Generation**: Each record in the target table receives an auto-generated surrogate key, which serves as a unique identifier independent of the natural key (`customer_id`).
+2. **Effective Date Tracking**: The transformation includes setting `effective_start_date` to the current timestamp when a new record is created. If a record is updated, the `effective_end_date` of the previous record is set to the current timestamp, and `is_current` is updated to `FALSE`.
+3. **Field Updates**: 
+   - **Type 1 Fields**: The fields `first_name`, `last_name`, `email`, and `phone` are updated in place without creating a new record.
+   - **Type 2 Field**: The `company_name` field is tracked for changes. If it changes, a new record is created with the updated `company_name`, while the previous record is expired.
 
 ### Business Rules
-1. **Tracked Fields**: The `company_name` is the only field tracked for SCD Type 2 changes, meaning that if it changes, a new record is created.
-2. **In-Place Updates**: Changes to `first_name`, `last_name`, `email`, and `phone` are updated directly in the existing record (SCD Type 1).
-3. **Natural Key**: The `customer_id` serves as the natural key, uniquely identifying each customer.
-4. **Surrogate Key**: Each record in the `dim_customer` table has an auto-generated surrogate key for internal tracking.
-5. **Temporal Tracking**: The use of `effective_start_date`, `effective_end_date`, and the `is_current` flag allows for historical tracking of customer data changes.
+1. **SCD Type 2 Tracking**: The `company_name` field is the only field tracked for historical changes. When it changes, a new version of the customer record is created.
+2. **SCD Type 1 Updates**: The fields `first_name`, `last_name`, `email`, and `phone` are updated directly in the existing record, reflecting the latest information without maintaining history.
+3. **Natural Key**: The `customer_id` serves as the natural key for identifying unique customers.
+4. **Surrogate Key**: An auto-generated sequence is used to create a surrogate key for each record in the `dim_customer` table.
+5. **Temporal Tracking**: The ETL process maintains temporal data through `effective_start_date`, `effective_end_date`, and the `is_current` flag to indicate the active record.
 
 ### SCD Type 2 Logic
-The ETL process implements SCD Type 2 by:
-- Checking for changes in the `company_name` field using the `has_scd2_change()` method.
-- If a change is detected, the `expire_record()` method is called to set the `effective_end_date` of the current record and mark it as not current (`is_current=FALSE`).
-- A new record is then created with the updated `company_name`, a new `effective_start_date`, and `is_current=TRUE`.
+The SCD Type 2 logic is implemented through the following steps:
+- The `get_current_record()` method retrieves the active record for a given `customer_id`.
+- The `has_scd2_change()` method checks if the `company_name` has changed compared to the current record.
+- If a change is detected, the `expire_record()` method is invoked to set the `effective_end_date` of the current record and mark it as not current (`is_current=FALSE`).
+- A new record is then inserted with the updated `company_name`, along with the current timestamp as the `effective_start_date` and `is_current=TRUE`.
 
 ### Data Quality Considerations
-To ensure data integrity and quality, the following aspects should be tested:
-1. **Data Completeness**: Verify that all expected fields from the CSV are populated in the target table.
-2. **Change Detection Accuracy**: Test the logic for detecting changes in both SCD Type 1 and Type 2 fields to ensure correct record updates and insertions.
-3. **Surrogate Key Uniqueness**: Ensure that surrogate keys are unique and correctly assigned.
-4. **Temporal Data Validity**: Check that `effective_start_date` and `effective_end_date` are correctly set and that there are no overlapping date ranges for the same customer.
-5. **Current Record Flag**: Validate that the `is_current` flag accurately reflects the most recent record for each customer.
+1. **Data Completeness**: Ensure that all required fields in the CSV are populated before processing.
+2. **Data Consistency**: Validate that `customer_id` is unique in the source data to prevent duplicate entries.
+3. **Change Detection Accuracy**: Test the logic for detecting changes in `company_name` and ensure Type 1 fields are updated correctly.
+4. **Temporal Integrity**: Verify that effective dates are correctly assigned and that no overlapping records exist for the same `customer_id`.
+5. **Error Handling**: Implement checks for file read errors, database connection issues, and data type mismatches during the ETL process.
 
 ---
 

@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "execution_started": "2026-01-31 15:28:30",
-    "execution_completed": "2026-01-31 15:29:35",
+    "execution_started": "2026-01-31 16:15:03",
+    "execution_completed": "2026-01-31 16:15:43",
     "total_tests": 20,
     "passed": 19,
     "failed": 1,
@@ -14,8 +14,8 @@
       "test_type": "quality_check",
       "severity": "critical",
       "status": "failed",
-      "execution_timestamp": "2026-01-31 15:28:33",
-      "execution_time_seconds": 0.71,
+      "execution_timestamp": "2026-01-31 16:15:06",
+      "execution_time_seconds": 0.48,
       "execution_plan": {
         "test_id": "QC001",
         "execution_steps": [
@@ -48,12 +48,12 @@
     },
     {
       "test_id": "QC002",
-      "test_name": "Check Primary Key Uniqueness",
+      "test_name": "Check Unique Customer IDs",
       "test_type": "quality_check",
       "severity": "critical",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:28:33",
-      "execution_time_seconds": 0.29,
+      "execution_timestamp": "2026-01-31 16:15:06",
+      "execution_time_seconds": 0.34,
       "execution_plan": {
         "test_id": "QC002",
         "execution_steps": [
@@ -61,7 +61,7 @@
             "step_number": 1,
             "method": "execute_query",
             "parameters": {
-              "query": "SELECT customer_id, COUNT(*) FROM dim_customer GROUP BY customer_id HAVING COUNT(*) > 1;"
+              "query": "SELECT COUNT(customer_id) FROM dim_customer GROUP BY customer_id HAVING COUNT(*) > 1;"
             },
             "description": "Execute validation query"
           }
@@ -76,22 +76,22 @@
           "step_number": 1,
           "method": "execute_query",
           "success": true,
-          "result": "[{'customer_id': 'C004', 'count': 2}, {'customer_id': 'C002', 'count': 2}, {'customer_id': 'C001', 'count': 2}]"
+          "result": "[{'count': 2}, {'count': 2}, {'count': 2}]"
         }
       ],
-      "actual_result": "[{'customer_id': 'C004', 'count': 2}, {'customer_id': 'C002', 'count': 2}, {'customer_id': 'C001', 'count': 2}]",
+      "actual_result": "[{'count': 2}, {'count': 2}, {'count': 2}]",
       "expected_result": "None",
-      "validation_message": "Query executed, results: [{'customer_id': 'C004', 'count': 2}, {'customer_id': 'C002', 'count': 2}, {'customer_id': 'C001', 'count': 2}]",
+      "validation_message": "Query executed, results: [{'count': 2}, {'count': 2}, {'count': 2}]",
       "error_message": null
     },
     {
       "test_id": "QC003",
-      "test_name": "Check Required Fields for NULLs",
+      "test_name": "Check Required Fields for NULL Values",
       "test_type": "quality_check",
-      "severity": "critical",
+      "severity": "high",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:28:34",
-      "execution_time_seconds": 0.25,
+      "execution_timestamp": "2026-01-31 16:15:06",
+      "execution_time_seconds": 0.3,
       "execution_plan": {
         "test_id": "QC003",
         "execution_steps": [
@@ -124,12 +124,12 @@
     },
     {
       "test_id": "QC004",
-      "test_name": "Check Current Record Constraint",
+      "test_name": "Check Current Records per Customer",
       "test_type": "quality_check",
-      "severity": "high",
+      "severity": "critical",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:28:34",
-      "execution_time_seconds": 0.43,
+      "execution_timestamp": "2026-01-31 16:15:07",
+      "execution_time_seconds": 0.22,
       "execution_plan": {
         "test_id": "QC004",
         "execution_steps": [
@@ -166,8 +166,8 @@
       "test_type": "quality_check",
       "severity": "high",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:28:34",
-      "execution_time_seconds": 0.27,
+      "execution_timestamp": "2026-01-31 16:15:07",
+      "execution_time_seconds": 0.23,
       "execution_plan": {
         "test_id": "QC005",
         "execution_steps": [
@@ -200,12 +200,12 @@
     },
     {
       "test_id": "QC006",
-      "test_name": "Check Effective Start Date Validity",
+      "test_name": "Check Effective Start and End Dates",
       "test_type": "quality_check",
-      "severity": "medium",
+      "severity": "high",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:28:35",
-      "execution_time_seconds": 0.27,
+      "execution_timestamp": "2026-01-31 16:15:07",
+      "execution_time_seconds": 0.26,
       "execution_plan": {
         "test_id": "QC006",
         "execution_steps": [
@@ -213,45 +213,7 @@
             "step_number": 1,
             "method": "execute_query",
             "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE effective_start_date > NOW();"
-            },
-            "description": "Execute validation query"
-          }
-        ],
-        "validation": {
-          "method": "compare_result",
-          "expected": 0
-        }
-      },
-      "step_results": [
-        {
-          "step_number": 1,
-          "method": "execute_query",
-          "success": true,
-          "result": "[{'count': 2}]"
-        }
-      ],
-      "actual_result": "[{'count': 2}]",
-      "expected_result": "None",
-      "validation_message": "Query executed, results: [{'count': 2}]",
-      "error_message": null
-    },
-    {
-      "test_id": "QC007",
-      "test_name": "Check Data Types for Customer ID",
-      "test_type": "quality_check",
-      "severity": "medium",
-      "status": "passed",
-      "execution_timestamp": "2026-01-31 15:28:35",
-      "execution_time_seconds": 0.44,
-      "execution_plan": {
-        "test_id": "QC007",
-        "execution_steps": [
-          {
-            "step_number": 1,
-            "method": "execute_query",
-            "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id IS NOT NULL AND NOT (customer_id ~ '^[A-Za-z0-9]+$');"
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE effective_end_date IS NOT NULL AND effective_end_date <= effective_start_date;"
             },
             "description": "Execute validation query"
           }
@@ -275,13 +237,51 @@
       "error_message": null
     },
     {
+      "test_id": "QC007",
+      "test_name": "Check Data Types of Columns",
+      "test_type": "quality_check",
+      "severity": "medium",
+      "status": "passed",
+      "execution_timestamp": "2026-01-31 16:15:07",
+      "execution_time_seconds": 0.31,
+      "execution_plan": {
+        "test_id": "QC007",
+        "execution_steps": [
+          {
+            "step_number": 1,
+            "method": "execute_query",
+            "parameters": {
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE NOT (surrogate_key IS NOT NULL AND customer_id IS NOT NULL AND first_name IS NULL AND last_name IS NULL AND email IS NULL AND company_name IS NULL AND phone IS NULL AND effective_start_date IS NOT NULL AND (effective_end_date IS NULL OR effective_end_date > effective_start_date) AND is_current IS NOT NULL);"
+            },
+            "description": "Execute validation query"
+          }
+        ],
+        "validation": {
+          "method": "compare_result",
+          "expected": 0
+        }
+      },
+      "step_results": [
+        {
+          "step_number": 1,
+          "method": "execute_query",
+          "success": true,
+          "result": "[{'count': 10}]"
+        }
+      ],
+      "actual_result": "[{'count': 10}]",
+      "expected_result": "None",
+      "validation_message": "Query executed, results: [{'count': 10}]",
+      "error_message": null
+    },
+    {
       "test_id": "QC008",
       "test_name": "Check Email Format",
       "test_type": "quality_check",
-      "severity": "high",
+      "severity": "medium",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:28:35",
-      "execution_time_seconds": 0.32,
+      "execution_timestamp": "2026-01-31 16:15:08",
+      "execution_time_seconds": 0.41,
       "execution_plan": {
         "test_id": "QC008",
         "execution_steps": [
@@ -289,7 +289,7 @@
             "step_number": 1,
             "method": "execute_query",
             "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE email IS NOT NULL AND NOT (email ~ '^[^@]+@[^@]+\\.[^@]+$');"
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE email !~ '^[^@]+@[^@]+\\.[^@]+$';"
             },
             "description": "Execute validation query"
           }
@@ -318,8 +318,8 @@
       "test_type": "quality_check",
       "severity": "medium",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:28:36",
-      "execution_time_seconds": 0.26,
+      "execution_timestamp": "2026-01-31 16:15:08",
+      "execution_time_seconds": 0.23,
       "execution_plan": {
         "test_id": "QC009",
         "execution_steps": [
@@ -327,7 +327,7 @@
             "step_number": 1,
             "method": "execute_query",
             "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE phone IS NOT NULL AND NOT (phone ~ '^\\d{3}-\\d{4}$');"
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE phone !~ '^\\d{3}-\\d{4}$';"
             },
             "description": "Execute validation query"
           }
@@ -352,90 +352,14 @@
     },
     {
       "test_id": "QC010",
-      "test_name": "Check Company Name Completeness",
-      "test_type": "quality_check",
-      "severity": "medium",
-      "status": "passed",
-      "execution_timestamp": "2026-01-31 15:28:36",
-      "execution_time_seconds": 0.98,
-      "execution_plan": {
-        "test_id": "QC010",
-        "execution_steps": [
-          {
-            "step_number": 1,
-            "method": "execute_query",
-            "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE company_name IS NULL;"
-            },
-            "description": "Execute validation query"
-          }
-        ],
-        "validation": {
-          "method": "compare_result",
-          "expected": 0
-        }
-      },
-      "step_results": [
-        {
-          "step_number": 1,
-          "method": "execute_query",
-          "success": true,
-          "result": "[{'count': 0}]"
-        }
-      ],
-      "actual_result": "[{'count': 0}]",
-      "expected_result": "None",
-      "validation_message": "Query executed, results: [{'count': 0}]",
-      "error_message": null
-    },
-    {
-      "test_id": "QC011",
-      "test_name": "Check Creation and Update Timestamps",
-      "test_type": "quality_check",
-      "severity": "medium",
-      "status": "passed",
-      "execution_timestamp": "2026-01-31 15:28:37",
-      "execution_time_seconds": 1.26,
-      "execution_plan": {
-        "test_id": "QC011",
-        "execution_steps": [
-          {
-            "step_number": 1,
-            "method": "execute_query",
-            "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE created_at IS NULL OR updated_at IS NULL OR created_at > updated_at;"
-            },
-            "description": "Execute validation query"
-          }
-        ],
-        "validation": {
-          "method": "compare_result",
-          "expected": 0
-        }
-      },
-      "step_results": [
-        {
-          "step_number": 1,
-          "method": "execute_query",
-          "success": true,
-          "result": "[{'count': 0}]"
-        }
-      ],
-      "actual_result": "[{'count': 0}]",
-      "expected_result": "None",
-      "validation_message": "Query executed, results: [{'count': 0}]",
-      "error_message": null
-    },
-    {
-      "test_id": "QC012",
       "test_name": "Check for Duplicate Surrogate Keys",
       "test_type": "quality_check",
       "severity": "critical",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:28:38",
-      "execution_time_seconds": 0.25,
+      "execution_timestamp": "2026-01-31 16:15:08",
+      "execution_time_seconds": 0.23,
       "execution_plan": {
-        "test_id": "QC012",
+        "test_id": "QC010",
         "execution_steps": [
           {
             "step_number": 1,
@@ -465,13 +389,89 @@
       "error_message": null
     },
     {
+      "test_id": "QC011",
+      "test_name": "Check Created At and Updated At Timestamps",
+      "test_type": "quality_check",
+      "severity": "medium",
+      "status": "passed",
+      "execution_timestamp": "2026-01-31 16:15:09",
+      "execution_time_seconds": 0.23,
+      "execution_plan": {
+        "test_id": "QC011",
+        "execution_steps": [
+          {
+            "step_number": 1,
+            "method": "execute_query",
+            "parameters": {
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE updated_at < created_at;"
+            },
+            "description": "Execute validation query"
+          }
+        ],
+        "validation": {
+          "method": "compare_result",
+          "expected": 0
+        }
+      },
+      "step_results": [
+        {
+          "step_number": 1,
+          "method": "execute_query",
+          "success": true,
+          "result": "[{'count': 0}]"
+        }
+      ],
+      "actual_result": "[{'count': 0}]",
+      "expected_result": "None",
+      "validation_message": "Query executed, results: [{'count': 0}]",
+      "error_message": null
+    },
+    {
+      "test_id": "QC012",
+      "test_name": "Check Company Name Consistency",
+      "test_type": "quality_check",
+      "severity": "medium",
+      "status": "passed",
+      "execution_timestamp": "2026-01-31 16:15:09",
+      "execution_time_seconds": 0.33,
+      "execution_plan": {
+        "test_id": "QC012",
+        "execution_steps": [
+          {
+            "step_number": 1,
+            "method": "execute_query",
+            "parameters": {
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE company_name IS NULL OR company_name = '';"
+            },
+            "description": "Execute validation query"
+          }
+        ],
+        "validation": {
+          "method": "compare_result",
+          "expected": 0
+        }
+      },
+      "step_results": [
+        {
+          "step_number": 1,
+          "method": "execute_query",
+          "success": true,
+          "result": "[{'count': 0}]"
+        }
+      ],
+      "actual_result": "[{'count': 0}]",
+      "expected_result": "None",
+      "validation_message": "Query executed, results: [{'count': 0}]",
+      "error_message": null
+    },
+    {
       "test_id": "SC001",
       "test_name": "New Customer Insertion",
       "test_type": "scenario_check",
-      "severity": "critical",
+      "severity": "high",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:28:38",
-      "execution_time_seconds": 7.44,
+      "execution_timestamp": "2026-01-31 16:15:09",
+      "execution_time_seconds": 3.54,
       "execution_plan": {
         "test_id": "SC001",
         "execution_steps": [
@@ -489,9 +489,9 @@
                 {
                   "customer_id": "C006",
                   "first_name": "Alice",
-                  "last_name": "Green",
-                  "email": "alice.green@email.com",
-                  "company_name": "GreenTech",
+                  "last_name": "Johnson",
+                  "email": "alice.johnson@email.com",
+                  "company_name": "NewWave Corp",
                   "phone": "555-0106"
                 }
               ]
@@ -529,7 +529,7 @@
         ],
         "validation": {
           "method": "check_outcome",
-          "expected": "A new record for customer C006 is inserted into the dim_customer table with is_current set to true."
+          "expected": "A new record for customer C006 is inserted into dim_customer with is_current set to true."
         }
       },
       "step_results": [
@@ -571,7 +571,7 @@
         }
       ],
       "actual_result": "[{'count': 1}]",
-      "expected_result": "A new record for customer C006 is inserted into the dim_customer table with is_current set to true.",
+      "expected_result": "A new record for customer C006 is inserted into dim_customer with is_current set to true.",
       "validation_message": "Validation passed: Found 1 records",
       "error_message": null
     },
@@ -581,8 +581,8 @@
       "test_type": "scenario_check",
       "severity": "high",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:28:46",
-      "execution_time_seconds": 6.31,
+      "execution_timestamp": "2026-01-31 16:15:13",
+      "execution_time_seconds": 4.55,
       "execution_plan": {
         "test_id": "SC002",
         "execution_steps": [
@@ -621,7 +621,7 @@
             "step_number": 4,
             "method": "execute_query",
             "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C001' AND is_current = false;"
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C001' AND is_current = true;"
             },
             "description": "Validation query 1"
           },
@@ -629,7 +629,7 @@
             "step_number": 5,
             "method": "execute_query",
             "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C001' AND company_name = 'NewTech Industries' AND is_current = true;"
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C001' AND is_current = false;"
             },
             "description": "Validation query 2"
           },
@@ -648,7 +648,7 @@
         ],
         "validation": {
           "method": "check_outcome",
-          "expected": "A new record for customer C001 is created with the new company name, and the previous record is marked as not current."
+          "expected": "A new record for customer C001 is created with the new company name, and the previous record's is_current is set to false."
         }
       },
       "step_results": [
@@ -674,13 +674,13 @@
           "step_number": 4,
           "method": "execute_query",
           "success": true,
-          "result": "[{'count': 2}]"
+          "result": "[{'count': 1}]"
         },
         {
           "step_number": 5,
           "method": "execute_query",
           "success": true,
-          "result": "[{'count': 1}]"
+          "result": "[{'count': 2}]"
         },
         {
           "step_number": 6,
@@ -695,8 +695,8 @@
           "result": "Table restored"
         }
       ],
-      "actual_result": "[{'count': 1}]",
-      "expected_result": "A new record for customer C001 is created with the new company name, and the previous record is marked as not current.",
+      "actual_result": "[{'count': 2}]",
+      "expected_result": "A new record for customer C001 is created with the new company name, and the previous record's is_current is set to false.",
       "validation_message": "Validation passed: Found 1 records",
       "error_message": null
     },
@@ -706,8 +706,8 @@
       "test_type": "scenario_check",
       "severity": "medium",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:28:52",
-      "execution_time_seconds": 7.56,
+      "execution_timestamp": "2026-01-31 16:15:17",
+      "execution_time_seconds": 4.02,
       "execution_plan": {
         "test_id": "SC003",
         "execution_steps": [
@@ -728,7 +728,7 @@
                   "last_name": "Doe",
                   "email": "jane.doe@email.com",
                   "company_name": "MegaData Corp",
-                  "phone": "555-0107"
+                  "phone": "555-0102"
                 }
               ]
             },
@@ -746,7 +746,7 @@
             "step_number": 4,
             "method": "execute_query",
             "parameters": {
-              "query": "SELECT first_name, last_name, email, phone FROM dim_customer WHERE customer_id = 'C002';"
+              "query": "SELECT first_name, last_name, email FROM dim_customer WHERE customer_id = 'C002';"
             },
             "description": "Validation query 1"
           },
@@ -765,7 +765,7 @@
         ],
         "validation": {
           "method": "check_outcome",
-          "expected": "The existing record for customer C002 is updated with the new name, email, and phone number."
+          "expected": "The existing record for customer C002 is updated with the new first name, last name, and email."
         }
       },
       "step_results": [
@@ -791,7 +791,7 @@
           "step_number": 4,
           "method": "execute_query",
           "success": true,
-          "result": "[{'first_name': 'Jane', 'last_name': 'Smith', 'email': 'jane.smith@email.com', 'phone': '555-0102'}, {'first_name': 'Jane', 'last_name': 'Doe', 'email': 'jane.doe@email.com', 'phone': '555-0107'}]"
+          "result": "[{'first_name': 'Jane', 'last_name': 'Smith', 'email': 'jane.smith@email.com'}, {'first_name': 'Jane', 'last_name': 'Doe', 'email': 'jane.doe@email.com'}]"
         },
         {
           "step_number": 5,
@@ -806,8 +806,8 @@
           "result": "Table restored"
         }
       ],
-      "actual_result": "[{'first_name': 'Jane', 'last_name': 'Smith', 'email': 'jane.smith@email.com', 'phone': '555-0102'}, {'first_name': 'Jane', 'last_name': 'Doe', 'email': 'jane.doe@email.com', 'phone': '555-0107'}]",
-      "expected_result": "The existing record for customer C002 is updated with the new name, email, and phone number.",
+      "actual_result": "[{'first_name': 'Jane', 'last_name': 'Smith', 'email': 'jane.smith@email.com'}, {'first_name': 'Jane', 'last_name': 'Doe', 'email': 'jane.doe@email.com'}]",
+      "expected_result": "The existing record for customer C002 is updated with the new first name, last name, and email.",
       "validation_message": "Validation passed: Found 2 records",
       "error_message": null
     },
@@ -817,8 +817,8 @@
       "test_type": "scenario_check",
       "severity": "high",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:29:00",
-      "execution_time_seconds": 6.26,
+      "execution_timestamp": "2026-01-31 16:15:21",
+      "execution_time_seconds": 4.38,
       "execution_plan": {
         "test_id": "SC004",
         "execution_steps": [
@@ -836,9 +836,9 @@
                 {
                   "customer_id": "C003",
                   "first_name": "Michael",
-                  "last_name": "Johnson",
-                  "email": "michael.new@email.com",
-                  "company_name": "CloudBase Solutions",
+                  "last_name": "Smith",
+                  "email": "michael.smith@email.com",
+                  "company_name": "CloudBase Systems",
                   "phone": "555-0103"
                 }
               ]
@@ -857,7 +857,7 @@
             "step_number": 4,
             "method": "execute_query",
             "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C003' AND is_current = false;"
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C003' AND is_current = true;"
             },
             "description": "Validation query 1"
           },
@@ -865,7 +865,7 @@
             "step_number": 5,
             "method": "execute_query",
             "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C003' AND email = 'michael.new@email.com' AND is_current = true;"
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C003' AND is_current = false;"
             },
             "description": "Validation query 2"
           },
@@ -884,7 +884,7 @@
         ],
         "validation": {
           "method": "check_outcome",
-          "expected": "A new record for customer C003 is created with the new company name and email, and the previous record is marked as not current."
+          "expected": "A new record for customer C003 is created with the new company name, and the previous record's is_current is set to false. The name and email are updated in the new record."
         }
       },
       "step_results": [
@@ -904,7 +904,7 @@
           "step_number": 3,
           "method": "run_etl_pipeline",
           "success": true,
-          "result": "{'inserted': 0, 'updated_scd2': 1, 'updated_scd1': 0, 'unchanged': 0}"
+          "result": "{'inserted': 0, 'updated_scd2': 0, 'updated_scd1': 1, 'unchanged': 0}"
         },
         {
           "step_number": 4,
@@ -916,7 +916,7 @@
           "step_number": 5,
           "method": "execute_query",
           "success": true,
-          "result": "[{'count': 1}]"
+          "result": "[{'count': 0}]"
         },
         {
           "step_number": 6,
@@ -931,8 +931,8 @@
           "result": "Table restored"
         }
       ],
-      "actual_result": "[{'count': 1}]",
-      "expected_result": "A new record for customer C003 is created with the new company name and email, and the previous record is marked as not current.",
+      "actual_result": "[{'count': 0}]",
+      "expected_result": "A new record for customer C003 is created with the new company name, and the previous record's is_current is set to false. The name and email are updated in the new record.",
       "validation_message": "Validation passed: Found 1 records",
       "error_message": null
     },
@@ -940,10 +940,10 @@
       "test_id": "SC005",
       "test_name": "Multiple Sequential Changes to Same Customer",
       "test_type": "scenario_check",
-      "severity": "medium",
+      "severity": "high",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:29:06",
-      "execution_time_seconds": 6.92,
+      "execution_timestamp": "2026-01-31 16:15:26",
+      "execution_time_seconds": 5.53,
       "execution_plan": {
         "test_id": "SC005",
         "execution_steps": [
@@ -970,9 +970,9 @@
                   "customer_id": "C001",
                   "first_name": "John",
                   "last_name": "Doe",
-                  "email": "john.updated@email.com",
-                  "company_name": "TechCorp Inc",
-                  "phone": "555-0108"
+                  "email": "john.doe@email.com",
+                  "company_name": "NeoTech Industries",
+                  "phone": "555-0101"
                 }
               ]
             },
@@ -990,7 +990,7 @@
             "step_number": 4,
             "method": "execute_query",
             "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C001' AND is_current = false;"
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C001' AND is_current = true;"
             },
             "description": "Validation query 1"
           },
@@ -998,7 +998,7 @@
             "step_number": 5,
             "method": "execute_query",
             "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C001' AND email = 'john.updated@email.com' AND is_current = true;"
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C001' AND is_current = false;"
             },
             "description": "Validation query 2"
           },
@@ -1017,7 +1017,7 @@
         ],
         "validation": {
           "method": "check_outcome",
-          "expected": "Two records for customer C001 are created, with the first record marked as not current and the second record as current."
+          "expected": "Two records for customer C001 are created: the first with TechCorp Inc and the second with NeoTech Industries, with the first marked as not current."
         }
       },
       "step_results": [
@@ -1037,19 +1037,19 @@
           "step_number": 3,
           "method": "run_etl_pipeline",
           "success": true,
-          "result": "{'inserted': 0, 'updated_scd2': 1, 'updated_scd1': 1, 'unchanged': 0}"
+          "result": "{'inserted': 0, 'updated_scd2': 2, 'updated_scd1': 0, 'unchanged': 0}"
         },
         {
           "step_number": 4,
           "method": "execute_query",
           "success": true,
-          "result": "[{'count': 2}]"
+          "result": "[{'count': 1}]"
         },
         {
           "step_number": 5,
           "method": "execute_query",
           "success": true,
-          "result": "[{'count': 1}]"
+          "result": "[{'count': 3}]"
         },
         {
           "step_number": 6,
@@ -1064,19 +1064,19 @@
           "result": "Table restored"
         }
       ],
-      "actual_result": "[{'count': 1}]",
-      "expected_result": "Two records for customer C001 are created, with the first record marked as not current and the second record as current.",
+      "actual_result": "[{'count': 3}]",
+      "expected_result": "Two records for customer C001 are created: the first with TechCorp Inc and the second with NeoTech Industries, with the first marked as not current.",
       "validation_message": "Validation passed: Found 1 records",
       "error_message": null
     },
     {
       "test_id": "SC006",
-      "test_name": "Unchanged Records",
+      "test_name": "Unchanged Records (No Updates)",
       "test_type": "scenario_check",
-      "severity": "low",
+      "severity": "medium",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:29:13",
-      "execution_time_seconds": 7.98,
+      "execution_timestamp": "2026-01-31 16:15:31",
+      "execution_time_seconds": 3.29,
       "execution_plan": {
         "test_id": "SC006",
         "execution_steps": [
@@ -1115,7 +1115,7 @@
             "step_number": 4,
             "method": "execute_query",
             "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C003' AND is_current = true;"
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C003';"
             },
             "description": "Validation query 1"
           },
@@ -1134,7 +1134,7 @@
         ],
         "validation": {
           "method": "check_outcome",
-          "expected": "The record for customer C003 remains unchanged in the dim_customer table."
+          "expected": "The record for customer C003 remains unchanged, and no new records are created."
         }
       },
       "step_results": [
@@ -1176,18 +1176,18 @@
         }
       ],
       "actual_result": "[{'count': 1}]",
-      "expected_result": "The record for customer C003 remains unchanged in the dim_customer table.",
+      "expected_result": "The record for customer C003 remains unchanged, and no new records are created.",
       "validation_message": "Validation passed: Found 1 records",
       "error_message": null
     },
     {
       "test_id": "SC007",
-      "test_name": "New Customer + Existing Customer Updates",
+      "test_name": "New Customer + Existing Customer Updates in Same File",
       "test_type": "scenario_check",
       "severity": "high",
       "status": "passed",
-      "execution_timestamp": "2026-01-31 15:29:21",
-      "execution_time_seconds": 6.42,
+      "execution_timestamp": "2026-01-31 16:15:34",
+      "execution_time_seconds": 4.5,
       "execution_plan": {
         "test_id": "SC007",
         "execution_steps": [
@@ -1203,20 +1203,20 @@
             "parameters": {
               "input_data": [
                 {
-                  "customer_id": "C004",
-                  "first_name": "Emily",
-                  "last_name": "Williams",
-                  "email": "emily.w@email.com",
-                  "company_name": "TechCorp Inc",
-                  "phone": "555-0104"
+                  "customer_id": "C007",
+                  "first_name": "Alice",
+                  "last_name": "Brown",
+                  "email": "alice.brown@email.com",
+                  "company_name": "FutureTech",
+                  "phone": "555-0107"
                 },
                 {
                   "customer_id": "C002",
                   "first_name": "Jane",
                   "last_name": "Doe",
                   "email": "jane.doe@email.com",
-                  "company_name": "DataSoft LLC",
-                  "phone": "555-0109"
+                  "company_name": "MegaData Corp",
+                  "phone": "555-0102"
                 }
               ]
             },
@@ -1234,7 +1234,7 @@
             "step_number": 4,
             "method": "execute_query",
             "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C004' AND is_current = true;"
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C007';"
             },
             "description": "Validation query 1"
           },
@@ -1242,7 +1242,7 @@
             "step_number": 5,
             "method": "execute_query",
             "parameters": {
-              "query": "SELECT phone FROM dim_customer WHERE customer_id = 'C002';"
+              "query": "SELECT first_name, last_name FROM dim_customer WHERE customer_id = 'C002';"
             },
             "description": "Validation query 2"
           },
@@ -1261,140 +1261,7 @@
         ],
         "validation": {
           "method": "check_outcome",
-          "expected": "A new record for customer C004 is inserted, and the record for customer C002 is updated with the new phone number."
-        }
-      },
-      "step_results": [
-        {
-          "step_number": 1,
-          "method": "create_backup",
-          "success": true,
-          "result": "Backup created"
-        },
-        {
-          "step_number": 2,
-          "method": "create_temp_input_file",
-          "success": true,
-          "result": "Temp file created"
-        },
-        {
-          "step_number": 3,
-          "method": "run_etl_pipeline",
-          "success": true,
-          "result": "{'inserted': 0, 'updated_scd2': 2, 'updated_scd1': 0, 'unchanged': 0}"
-        },
-        {
-          "step_number": 4,
-          "method": "execute_query",
-          "success": true,
-          "result": "[{'count': 1}]"
-        },
-        {
-          "step_number": 5,
-          "method": "execute_query",
-          "success": true,
-          "result": "[{'phone': '555-0102'}, {'phone': '555-0102'}, {'phone': '555-0109'}]"
-        },
-        {
-          "step_number": 6,
-          "method": "cleanup_temp_file",
-          "success": true,
-          "result": "Temp file removed"
-        },
-        {
-          "step_number": 7,
-          "method": "restore_from_backup",
-          "success": true,
-          "result": "Table restored"
-        }
-      ],
-      "actual_result": "[{'phone': '555-0102'}, {'phone': '555-0102'}, {'phone': '555-0109'}]",
-      "expected_result": "A new record for customer C004 is inserted, and the record for customer C002 is updated with the new phone number.",
-      "validation_message": "Validation passed: Found 3 records",
-      "error_message": null
-    },
-    {
-      "test_id": "SC008",
-      "test_name": "Edge Cases with Empty Values",
-      "test_type": "scenario_check",
-      "severity": "medium",
-      "status": "passed",
-      "execution_timestamp": "2026-01-31 15:29:27",
-      "execution_time_seconds": 7.6,
-      "execution_plan": {
-        "test_id": "SC008",
-        "execution_steps": [
-          {
-            "step_number": 1,
-            "method": "create_backup",
-            "parameters": {},
-            "description": "Backup current table state"
-          },
-          {
-            "step_number": 2,
-            "method": "create_temp_input_file",
-            "parameters": {
-              "input_data": [
-                {
-                  "customer_id": "C005",
-                  "first_name": "",
-                  "last_name": "Brown",
-                  "email": "david.b@email.com",
-                  "company_name": "InnovateTech",
-                  "phone": "555-0105"
-                },
-                {
-                  "customer_id": "C006",
-                  "first_name": "Alice",
-                  "last_name": "Green",
-                  "email": "alice.green@email.com",
-                  "company_name": "Green@Tech",
-                  "phone": "555-0106"
-                }
-              ]
-            },
-            "description": "Create temp input file with test data"
-          },
-          {
-            "step_number": 3,
-            "method": "run_etl_pipeline",
-            "parameters": {
-              "source_file": null
-            },
-            "description": "Run ETL pipeline with test data"
-          },
-          {
-            "step_number": 4,
-            "method": "execute_query",
-            "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C005' AND first_name = '';"
-            },
-            "description": "Validation query 1"
-          },
-          {
-            "step_number": 5,
-            "method": "execute_query",
-            "parameters": {
-              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C006' AND company_name = 'Green@Tech';"
-            },
-            "description": "Validation query 2"
-          },
-          {
-            "step_number": 6,
-            "method": "cleanup_temp_file",
-            "parameters": {},
-            "description": "Cleanup temp files"
-          },
-          {
-            "step_number": 7,
-            "method": "restore_from_backup",
-            "parameters": {},
-            "description": "Restore table from backup"
-          }
-        ],
-        "validation": {
-          "method": "check_outcome",
-          "expected": "Records are inserted or updated correctly, with the first name of C005 being empty and the company name of C006 containing a special character."
+          "expected": "A new record for customer C007 is created, and the existing record for C002 is updated with the new name."
         }
       },
       "step_results": [
@@ -1420,13 +1287,13 @@
           "step_number": 4,
           "method": "execute_query",
           "success": true,
-          "result": "[{'count': 1}]"
+          "result": "[{'count': 2}]"
         },
         {
           "step_number": 5,
           "method": "execute_query",
           "success": true,
-          "result": "[{'count': 1}]"
+          "result": "[{'first_name': 'Jane', 'last_name': 'Smith'}, {'first_name': 'Jane', 'last_name': 'Doe'}]"
         },
         {
           "step_number": 6,
@@ -1441,8 +1308,133 @@
           "result": "Table restored"
         }
       ],
-      "actual_result": "[{'count': 1}]",
-      "expected_result": "Records are inserted or updated correctly, with the first name of C005 being empty and the company name of C006 containing a special character.",
+      "actual_result": "[{'first_name': 'Jane', 'last_name': 'Smith'}, {'first_name': 'Jane', 'last_name': 'Doe'}]",
+      "expected_result": "A new record for customer C007 is created, and the existing record for C002 is updated with the new name.",
+      "validation_message": "Validation passed: Found 2 records",
+      "error_message": null
+    },
+    {
+      "test_id": "SC008",
+      "test_name": "Edge Cases (Empty Values, Special Characters)",
+      "test_type": "scenario_check",
+      "severity": "medium",
+      "status": "passed",
+      "execution_timestamp": "2026-01-31 16:15:39",
+      "execution_time_seconds": 4.19,
+      "execution_plan": {
+        "test_id": "SC008",
+        "execution_steps": [
+          {
+            "step_number": 1,
+            "method": "create_backup",
+            "parameters": {},
+            "description": "Backup current table state"
+          },
+          {
+            "step_number": 2,
+            "method": "create_temp_input_file",
+            "parameters": {
+              "input_data": [
+                {
+                  "customer_id": "C008",
+                  "first_name": "",
+                  "last_name": "O'Reilly",
+                  "email": "o'reilly@email.com",
+                  "company_name": "EdgeCase Inc",
+                  "phone": "555-0108"
+                }
+              ]
+            },
+            "description": "Create temp input file with test data"
+          },
+          {
+            "step_number": 3,
+            "method": "run_etl_pipeline",
+            "parameters": {
+              "source_file": null
+            },
+            "description": "Run ETL pipeline with test data"
+          },
+          {
+            "step_number": 4,
+            "method": "execute_query",
+            "parameters": {
+              "query": "SELECT COUNT(*) FROM dim_customer WHERE customer_id = 'C008';"
+            },
+            "description": "Validation query 1"
+          },
+          {
+            "step_number": 5,
+            "method": "execute_query",
+            "parameters": {
+              "query": "SELECT first_name, last_name FROM dim_customer WHERE customer_id = 'C008';"
+            },
+            "description": "Validation query 2"
+          },
+          {
+            "step_number": 6,
+            "method": "cleanup_temp_file",
+            "parameters": {},
+            "description": "Cleanup temp files"
+          },
+          {
+            "step_number": 7,
+            "method": "restore_from_backup",
+            "parameters": {},
+            "description": "Restore table from backup"
+          }
+        ],
+        "validation": {
+          "method": "check_outcome",
+          "expected": "A new record for customer C008 is created with the first name as empty and the last name containing a special character."
+        }
+      },
+      "step_results": [
+        {
+          "step_number": 1,
+          "method": "create_backup",
+          "success": true,
+          "result": "Backup created"
+        },
+        {
+          "step_number": 2,
+          "method": "create_temp_input_file",
+          "success": true,
+          "result": "Temp file created"
+        },
+        {
+          "step_number": 3,
+          "method": "run_etl_pipeline",
+          "success": true,
+          "result": "{'inserted': 1, 'updated_scd2': 0, 'updated_scd1': 0, 'unchanged': 0}"
+        },
+        {
+          "step_number": 4,
+          "method": "execute_query",
+          "success": true,
+          "result": "[{'count': 1}]"
+        },
+        {
+          "step_number": 5,
+          "method": "execute_query",
+          "success": true,
+          "result": "[{'first_name': '', 'last_name': \"O'Reilly\"}]"
+        },
+        {
+          "step_number": 6,
+          "method": "cleanup_temp_file",
+          "success": true,
+          "result": "Temp file removed"
+        },
+        {
+          "step_number": 7,
+          "method": "restore_from_backup",
+          "success": true,
+          "result": "Table restored"
+        }
+      ],
+      "actual_result": "[{'first_name': '', 'last_name': \"O'Reilly\"}]",
+      "expected_result": "A new record for customer C008 is created with the first name as empty and the last name containing a special character.",
       "validation_message": "Validation passed: Found 1 records",
       "error_message": null
     }
