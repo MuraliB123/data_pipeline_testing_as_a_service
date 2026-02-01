@@ -5,8 +5,17 @@ const LandingPage = ({ onGetStarted }) => {
     <div className="landing-page">
       <nav className="landing-nav">
         <div className="logo">
-          <div className="logo-icon">⚡</div>
-          <span>FlowSpec</span>
+          <span style={{
+            fontFamily: 'Inter, Segoe UI, Arial, sans-serif',
+            fontWeight: 900,
+            fontSize: '2.1rem',
+            letterSpacing: '-0.04em',
+            background: 'linear-gradient(90deg, #6366f1 0%, #10b981 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            lineHeight: 1.1
+          }}>DataPulse AI</span>
         </div>
         <div className="nav-actions">
           <button className="btn btn-ghost">Sign In</button>
@@ -17,14 +26,13 @@ const LandingPage = ({ onGetStarted }) => {
       <section className="enterprise-hero">
         <div className="hero-content">
           <div className="hero-badge">
-            <span className="badge-icon">🏆</span>
-            Enterprise-Ready Platform
+             Transforming Data Testing with Intelligent Automation
           </div>
           <h1 className="enterprise-title">
             Enterprise-Grade <span className="gradient-text">Data Pipeline Testing</span> at Scale
           </h1>
           <p className="enterprise-subtitle">
-            Transform your data operations with FlowSpec's AI-powered testing platform. 
+            Transform your data operations with DataPulse's AI-powered testing platform. 
             Built for enterprises to ensure data quality, compliance, and operational excellence.
           </p>
           <div className="cta-section">
@@ -92,25 +100,19 @@ const LandingPage = ({ onGetStarted }) => {
             <div className="feature-icon">🤖</div>
             <h3 className="feature-title">AI-Driven Code Analysis</h3>
             <p className="feature-desc">
-              Advanced machine learning algorithms automatically analyze your ETL pipelines, 
-              identifying data patterns, transformations, and potential quality risks with 95% accuracy.
             </p>
           </div>
           <div className="feature-card">
             <div className="feature-icon">⚡</div>
             <h3 className="feature-title">Intelligent Test Automation</h3>
             <p className="feature-desc">
-              AI generates comprehensive test suites in seconds - from edge cases to scenario validations. 
-              No manual scripting required, just enterprise-grade automated testing.
-            </p>
+             </p>
           </div>
           <div className="feature-card">
             <div className="feature-icon">📈</div>
             <h3 className="feature-title">Real-Time Analytics & Insights</h3>
             <p className="feature-desc">
-              Get instant, actionable insights with AI-powered dashboards. Track data quality trends, 
-              performance metrics, and compliance status in real-time.
-            </p>
+             </p>
           </div>
         </div>
       </section>

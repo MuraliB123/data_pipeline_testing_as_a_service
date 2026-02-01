@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ConnectionsPage from './ConnectionsPage';
+import PipelinesPage from './PipelinesPage';
 
 const SaaSPage = ({ onBack }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -20,6 +21,13 @@ const SaaSPage = ({ onBack }) => {
     );
   }
 
+  // Render pipelines page
+  if (currentPage === 'pipelines') {
+    return (
+      <PipelinesPage onBack={() => setCurrentPage('dashboard')} />
+    );
+  }
+
   return (
     <div className="saas-dashboard">
       {/* Top Navigation */}
@@ -32,8 +40,17 @@ const SaaSPage = ({ onBack }) => {
             ☰
           </button>
           <div className="logo">
-            <div className="logo-icon">⚡</div>
-            <span>FlowSpec</span>
+             <span style={{
+            fontFamily: 'Inter, Segoe UI, Arial, sans-serif',
+            fontWeight: 900,
+            fontSize: '1.7rem',
+            letterSpacing: '-0.04em',
+            background: 'linear-gradient(90deg, #6366f1 0%, #10b981 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            lineHeight: 0.7
+          }}>DataPulse AI</span>
           </div>
         </div>
         <div className="nav-right">
@@ -79,7 +96,14 @@ const SaaSPage = ({ onBack }) => {
             <span className="nav-icon">🔗</span>
             <span>Connections</span>
           </a>
-          <a href="#" className="nav-item">
+          <a 
+            href="#" 
+            className={`nav-item ${currentPage === 'pipelines' ? 'active' : ''}`}
+            onClick={(e) => {
+              e.preventDefault();
+              setCurrentPage('pipelines');
+            }}
+          >
             <span className="nav-icon">⚙️</span>
             <span>Pipelines</span>
           </a>
