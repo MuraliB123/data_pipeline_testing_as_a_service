@@ -1,0 +1,68 @@
+[
+  {
+    "id": "conn-001",
+    "name": "Customer Initial Data",
+    "type": "input_sor",
+    "config": {
+      "file_path": "input_sor/customers_initial.csv",
+      "file_type": "csv",
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "has_header": true
+    },
+    "created_at": "2026-01-01 00:00:00"
+  },
+  {
+    "id": "conn-002",
+    "name": "Customer Updated Data",
+    "type": "input_sor",
+    "config": {
+      "file_path": "input_sor/customers_updated.csv",
+      "file_type": "csv",
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "has_header": true
+    },
+    "created_at": "2026-01-01 00:00:00"
+  },
+  {
+    "id": "conn-003",
+    "name": "Destination PostgreSQL DB",
+    "type": "target_db",
+    "config": {
+      "host": "localhost",
+      "port": "5432",
+      "database": "etl_target",
+      "username": "etl_user",
+      "password": "********",
+      "db_type": "postgresql"
+    },
+    "created_at": "2026-01-01 00:00:00"
+  },
+  {
+    "id": "conn-004",
+    "name": "External API Feed",
+    "type": "api_source",
+    "config": {
+      "base_url": "https://api.example.com/v1",
+      "auth_type": "bearer_token",
+      "auth_value": "********",
+      "timeout": "30",
+      "rate_limit": "60"
+    },
+    "created_at": "2026-01-01 00:00:00"
+  },
+  {
+    "id": "a8cf7c4f-57df-43e5-82c4-b8faa1444c87",
+    "name": "Vendor_managment_flat_files_src",
+    "type": "input_sor",
+    "config": {
+      "file_path": "\"C:\\Users\\MuraliB\\Desktop\\vendor_mngt.txt.txt\"",
+      "file_type": "txt",
+      "encoding": "utf-8",
+      "delimiter": ",",
+      "has_header": true
+    },
+    "created_at": "2026-02-01 19:04:12"
+  }
+]

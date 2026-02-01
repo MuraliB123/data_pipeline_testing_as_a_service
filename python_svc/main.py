@@ -9,12 +9,15 @@ This Flask service orchestrates the automated testing pipeline:
 Endpoints:
 - POST /start-signal - Receives start signal from frontend and executes all pipeline steps
 - GET /results - Get the latest test results
+- GET /connections - Get all connections
+- POST /connections - Create a new connection
 """
 
 import os
 import json
+import uuid
 from datetime import datetime
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 # Import pipeline components
@@ -28,10 +31,27 @@ CORS(app)
 # Base path for file operations
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
+# Connections storage file
+CONNECTIONS_FILE = os.path.join(BASE_PATH,'temp_artifacts', 'connections.json')
+
 
 def get_timestamp():
     """Get current timestamp string."""
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
+def load_connections():
+    """Load connections from JSON file."""
+    if os.path.exists(CONNECTIONS_FILE):
+        with open(CONNECTIONS_FILE, 'r') as f:
+            return json.load(f)
+    return []
+
+
+def save_connections(connections):
+    """Save connections to JSON file."""
+    with open(CONNECTIONS_FILE, 'w') as f:
+        json.dump(connections, f, indent=2)
 
 
 @app.route('/start-signal', methods=['POST'])
@@ -124,13 +144,74 @@ def get_results():
         }), 500
 
 
+@app.route('/connections', methods=['GET'])
+def get_connections():
+    """
+    Get all connections.
+    """
+    try:
+        connections = load_connections()
+        return jsonify({
+            "status": "success",
+            "connections": connections
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
+@app.route('/connections', methods=['POST'])
+def create_connection():
+    """
+    Create a new connection.
+    """
+    try:
+        data = request.get_json()
+        
+        # Validate required fields
+        if not data.get('name') or not data.get('type'):
+            return jsonify({
+                "status": "error",
+                "message": "Name and type are required"
+            }), 400
+        
+        connections = load_connections()
+        
+        # Create new connection
+        new_connection = {
+            "id": str(uuid.uuid4()),
+            "name": data['name'],
+            "type": data['type'],
+            "config": data.get('config', {}),
+            "created_at": get_timestamp()
+        }
+        
+        connections.append(new_connection)
+        save_connections(connections)
+        
+        return jsonify({
+            "status": "success",
+            "connection": new_connection
+        }), 201
+        
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
 if __name__ == "__main__":
     print("\n" + "="*60)
     print("Data Pipeline Testing Platform - API Service")
     print("="*60)
     print("\nAvailable Endpoints:")
-    print("  POST /start-signal - Execute complete testing pipeline")
-    print("  GET  /results      - Get latest test results")
+    print("  POST /start-signal    - Execute complete testing pipeline")
+    print("  GET  /results         - Get latest test results")
+    print("  GET  /connections     - Get all connections")
+    print("  POST /connections     - Create new connection")
     print("\n" + "="*60)
     
     app.run(host='0.0.0.0', port=5000, debug=True)
